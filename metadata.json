@@ -1,0 +1,6 @@
+{
+  "name": "Exodo",
+  "description": "Exodo - Desenvolvimento Premium de Software e Sistemas de Missão Crítica sob medida.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

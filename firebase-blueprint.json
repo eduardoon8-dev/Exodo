@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Lead": {
+      "title": "Lead",
+      "description": "A business lead submitting a project proposal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "companyName": { "type": "string" },
+        "contactName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "services": { "type": "array" },
+        "budget": { "type": "string" },
+        "timeline": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "status": { "type": "string" },
+        "aiAnalysis": { "type": "object" }
+      },
+      "required": ["companyName", "contactName", "email", "phone", "services", "budget", "timeline", "description", "createdAt", "status"]
+    },
+    "TeamUser": {
+      "title": "TeamUser",
+      "description": "A directory user of the team with dashboard access",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "password": { "type": "string" },
+        "role": { "type": "string" },
+        "matricula": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["username", "password", "role", "matricula", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "All leads submitted to Exodo portal"
+    },
+    "/team/{userId}": {
+      "schema": "TeamUser",
+      "description": "Team directory user configuration"
+    }
+  }
+}

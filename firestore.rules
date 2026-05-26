@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation for Leads
+    function isValidLead(data) {
+      return data.companyName is string && data.companyName.size() <= 200
+        && data.contactName is string && data.contactName.size() <= 200
+        && data.email is string && data.email.size() <= 200
+        && data.phone is string && data.phone.size() <= 40
+        && data.services is list && data.services.size() <= 15
+        && data.budget is string && data.budget.size() <= 100
+        && data.timeline is string && data.timeline.size() <= 100
+        && data.description is string && data.description.size() <= 5000
+        && data.status in ['novo', 'contatado', 'arquivado'];
+    }
+
+    // Validation for Team Members
+    function isValidTeamUser(data) {
+      return data.username is string && data.username.size() <= 80
+        && data.password is string && data.password.size() <= 80
+        && data.role in ['admin', 'member']
+        && data.matricula is string && data.matricula.size() <= 20;
+    }
+
+    // Rules for leads
+    match /leads/{leadId} {
+      allow get: if isValidId(leadId);
+      allow list: if true; // anyone or authenticated can fetch listing (though UI handles it)
+      allow create: if isValidId(leadId) && isValidLead(incoming());
+      allow update: if true; // anyone or authenticated can update status
+      allow delete: if true;
+    }
+
+    // Rules for team
+    match /team/{userId} {
+      allow get: if isValidId(userId);
+      allow list: if true;
+      allow create: if isValidId(userId) && isValidTeamUser(incoming());
+      allow update: if true;
+      allow delete: if true;
+    }
+  }
+}
